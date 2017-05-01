@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">The Doll House</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_team">Team</string>
+    <string name="title_activity_game_scene_1">game_scene_1</string>
+    <string name="title_activity_scene_1_1">scene_1_1</string>
+    <string name="title_activity_scene_1_2">scene_1_2</string>
+    <string name="title_activity_scene_1_3">scene_1_3</string>
+    <string name="title_activity_scene_1_4">scene_1_4</string>
+    <string name="title_activity_scene_1_5">scene_1_5</string>
+    <string name="title_activity_scene_1_6">scene_1_6</string>
+    <string name="title_activity_scene_1_7">scene_1_7</string>
+    <string name="title_activity_scene_1_8">scene_1_8</string>
+    <string name="Casting">Script:\nHau Ling CHEUNG\nWai Lok LUI\nYi Sum CHAN\nSin Nam WONG\n\nIllustrator:\nFong Ching WAI\n\nCoding:\nKai Cheong Wong\n\n1st Anniversary Edition\nYun\nKai Cheong Wong\nSin Nam WONG\nFong Ching WAI</string>
+    <string name="about">主角被變成人偶並放在店內，記憶亦失去了，但能在有限的時間內活動。\n\n主角將和同伴，在有限時間內完成任務，尋找自己記憶，和自己變為人偶的真相...</string>
+
+</resources>
