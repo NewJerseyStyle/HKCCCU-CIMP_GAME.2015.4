@@ -41,7 +41,7 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
     private Thread t;
     private static Handler mHandler;
     private String currLine;
-    private int choice, tries;
+    private int choice, tries, progress;
     private Queue<String> autoPlayStr;
     private Queue<int[]> autoPlayImg;
 
@@ -52,7 +52,7 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
         fadeOut.setStartOffset(0);
         fadeOut.setDuration(1000);
         fadeOut.setRepeatCount(0);
-        choice = tries = 0;
+        choice = tries = progress = 0;
         autoPlayStr = new LinkedList<>();
         autoPlayImg = new LinkedList<>();
         t = null;
@@ -583,6 +583,7 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
                                 autoPlayStr.offer("怎麼了？");
                                 autoPlayStr.offer("沒什麼，找找筆記，我總覺得我們的身世好像在這個地方。");
                                 autoPlayStr.offer("這三個人偶都好像有點怪怪的，搞不好其中一個就藏着我們的身世！");
+                                progress |= 1;
                                 break;
                             case 2:
                                 autoPlayImg.offer(new int[]{R.drawable.s0402bgi, R.drawable.nline, 0, 0});
@@ -593,16 +594,23 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
                                 autoPlayStr.offer("這道門開不了.....");
                                 autoPlayStr.offer("我們先去找其他地方吧，說不定其他地方會有這門的鎖匙。");
                                 autoPlayStr.offer("啊！（回想起奇怪的記憶）");
+                                progress |= 2;
                                 break;
                             case 3:
                                 autoPlayImg.offer(new int[]{R.drawable.s0405bgi, R.drawable.nline, 0, 0});
                                 autoPlayImg.offer(new int[]{R.drawable.s0405bgi, R.drawable.peter, 0, 0});
-                                autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.mary, 0, R.drawable.rightchar04});
-                                autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.mary, R.drawable.leftchar01, R.drawable.rightchar04});
+                                if (progress == 3) {
+                                    autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.mary, 0, R.drawable.rightchar04});
+                                    autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.mary, R.drawable.leftchar01, R.drawable.rightchar04});
+                                }
                                 autoPlayStr.offer("（二人來到櫥窗前）");
-                                autoPlayStr.offer("這裏放的都是最矚目的暢銷人偶。你可以憑記憶想起什麼暗格嗎？可能安娜就藏在這兒也說不定。");
-                                autoPlayStr.offer("啊！櫥窗最頂層那個綠色箭頭標記的盒子！是我小時候用來放人偶衣服的！");
-                                autoPlayStr.offer("它的位置太高了，我們要取點工具幫忙。");
+                                if (progress == 3) {
+                                    autoPlayStr.offer("這裏放的都是最矚目的暢銷人偶。你可以憑記憶想起什麼暗格嗎？可能安娜就藏在這兒也說不定。");
+                                    autoPlayStr.offer("啊！櫥窗最頂層那個綠色箭頭標記的盒子！是我小時候用來放人偶衣服的！");
+                                    autoPlayStr.offer("它的位置太高了，我們要取點工具幫忙。");
+                                } else {
+                                    autoPlayStr.offer("這裏放的都是最矚目的暢銷人偶。");
+                                }
                                 break;
                             default:
                                 break;
@@ -665,13 +673,13 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
                         scenesNum++;
                         shotNum = 0;
                         onClick(v);
-                        /*if (tries < 3) {
+                        if (tries > 5) {
                             //bad end
-                            //bad_ending_choice(view);
+                            bad_ending_choice(BAD_END_1);
                             //goto choice
                             //scenesNum = 2; shotNum = 14;
                             break;
-                        }*/
+                        }
                         break;
                 }
                 break;
@@ -861,14 +869,20 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
                         onClick(v);
                         break;
                     case 3:
+                        if (progress != 3) {
+                            shotNum = 2;
+                            onClick(v);
+                            break;
+                        }
                         background.setBackgroundResource(R.drawable.s0405bgi);
                         opts = (LinearLayout) background.getChildAt(0);
                         imageView = new ImageView(Scenes.this);
-                        imageView.setImageResource(R.drawable.opt2char2);
+                        imageView.setImageResource(R.drawable.opt3selection1);
                         imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
                         opts.addView(imageView, 1);
-                        leftChar.setImageResource(R.drawable.opt2char1);
-                        rightChar.setImageResource(R.drawable.opt2char3);
+                        leftChar.setImageResource(R.drawable.opt3selection2);
+                        rightChar.setImageResource(R.drawable.opt3selection3
+                        );
                         charLines.setText("選擇哪一個工具可拿到盒子？");
                         leftChar.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -1118,6 +1132,57 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
                             }
                         }
                         break;
+                    case 2:
+                        if (choice == 1) {
+                            //background.setBackgroundResource(R.drawable.s0100bgi);
+                            charLines.setBackgroundResource(R.drawable.nline);
+                            charLines.setHeight(800);
+                            SpannableString ss = new SpannableString("你要怎樣做呢：\n\nA.-離開\n\nB.-留下");
+                            ss.setSpan(new ClickableSpan() {
+                                @Override
+                                public void onClick(View textView) {
+                                    progress = 0;
+                                    choice = 1;
+                                    shotNum++;
+                                }
+
+                                @Override
+                                public void updateDrawState(TextPaint ds) {
+                                    ds.setUnderlineText(false);
+                                }
+                            }, 4, 9, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                            ss.setSpan(new ClickableSpan() {
+                                @Override
+                                public void onClick(View textView) {
+                                    progress = 0;
+                                    choice = 2;
+                                    shotNum++;
+                                }
+
+                                @Override
+                                public void updateDrawState(TextPaint ds) {
+                                    ds.setUnderlineText(false);
+                                }
+                            }, 11, 16, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                            charLines.setPadding(80, 110, 60, 60);
+                            charLines.setText(ss);
+                            charLines.setMovementMethod(LinkMovementMethod.getInstance());
+                            charLines.setHighlightColor(Color.TRANSPARENT);
+                        } else {
+                            ;
+                        }
+                        break;
+                    case 3:
+                        if (progress == 0) {
+                            if (choice == 1) {
+                                Toast.makeText(this, "你太天真了人類...",
+                                        Toast.LENGTH_LONG).show();
+                                bad_ending_choice(BAD_END_1);
+                            } else {
+                                shotNum++;
+                            }
+                        }
+                        break;
                     default:
                         if (takeNum == 1) {
                             skipTyping();
@@ -1135,27 +1200,33 @@ public class Scenes extends ActionBarActivity implements View.OnClickListener {
                 switch (shotNum){
                     case 0:
                         shotNum++;
-                        if (choice == 3){
+                        if (progress == 1){
                             shotNum++;
                         }
                         onClick(v);
                         break;
                     case 1:
-                        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService
-                                (Context.LAYOUT_INFLATER_SERVICE);
-                        View view = inflater.inflate(R.layout.activity_scene_base, null);
-                        view.findViewById(R.id.background).setBackgroundResource(R.drawable.s0100bgi);
-                        findViewById(R.id.background).startAnimation(fadeOut);
-                        setContentView(view);
-                        findViewById(R.id.background).setOnClickListener(Scenes.this);
-                        findViewById(R.id.leftChar).setOnClickListener(Scenes.this);
-                        findViewById(R.id.rightChar).setOnClickListener(Scenes.this);
-                        charLines = (TextView) findViewById(R.id.lines);
-                        charLines.setOnClickListener(Scenes.this);
-                        charLines.setBackgroundColor(Color.parseColor("#88FFFFFF"));
-                        typing("你要怎樣做呢？", 200);
-                        scenesNum++;
-                        shotNum = 0;
+                        autoPlayStr = new LinkedList<>();
+                        autoPlayImg = new LinkedList<>();
+                        charLines.setText("");
+                        charLines.setPadding(80, 60, 40, 40);
+                        charLines.setHeight(400);
+                        autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.peter, 0, 0});
+                        autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.mary, 0, R.drawable.rightchar04});
+                        autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.peter, R.drawable.leftchar02, R.drawable.rightchar04});
+                        autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.mary, R.drawable.leftchar02, R.drawable.rightchar01});
+                        autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.peter, R.drawable.leftchar01, R.drawable.rightchar02});
+                        autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.mary, R.drawable.leftchar02, R.drawable.rightchar01});
+                        autoPlayImg.offer(new int[]{R.drawable.s0100bgi, R.drawable.peter, R.drawable.leftchar01, R.drawable.rightchar02});
+                        autoPlayStr.offer("感謝你的決定！");
+                        autoPlayStr.offer("好吧，彼得你也是我在這兒的第一個朋友，我們一起尋找安娜吧。");
+                        autoPlayStr.offer("謝謝你！咦，這是什麼？（指向不遠處）");
+                        autoPlayStr.offer("好像是一個針線包，拿來縫補人偶用的吧？");
+                        autoPlayStr.offer("或者之後有用也說不定，先帶着吧。");
+                        autoPlayStr.offer("我們下一站到哪裏？");
+                        autoPlayStr.offer("不知道呢，這兒任務已完成了，回去再決定吧！");
+                        shotNum++;
+                        onClick(v);
                         break;
                     case 2:
                         break;
